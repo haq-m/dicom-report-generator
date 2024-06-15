@@ -2,6 +2,26 @@
 	import { Button } from '@shadcn/ui/button';
 	import * as Card from '@shadcn/ui/card';
 	import { Input } from '@shadcn/ui/input';
+	import * as dicomjs from 'dicom.ts';
+
+	let files: FileList;
+	let value: any;
+	let imageUrl: string = '';
+	$: onFilesDropped(files);
+	async function onFilesDropped(files: FileList) {
+		if (!files) {
+			return;
+		}
+
+		let canvas: HTMLCanvasElement = document.createElement('canvas');
+		let arrayBuffer = await files[0].arrayBuffer();
+		const image = dicomjs.parseImage(arrayBuffer);
+		const renderer = new dicomjs.Renderer(canvas);
+		// Decode and render frame 0 on the canvas
+		await renderer.render(image, 0);
+		imageUrl = canvas.toDataURL();
+	}
+	console.log('HERE', value);
 </script>
 
 <div class="flex flex-col min-h-screen w-full">
@@ -23,8 +43,19 @@
 						</Card.Description>
 					</Card.Header>
 					<Card.Content>
-						<!-- <Label for="picture">Picture</Label> -->
-						<Input id="picture" type="file" accept=".dcm" />
+						<!-- <Input type="file" accept=".dcm" /> -->
+						<input
+							type="file"
+							bind:files
+							multiple
+							accept=".dcm"
+							class={'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'}
+						/>
+						{#if imageUrl.length}
+							<div class="flex items-center justify-center h-96 bg-pink-100 pt-4 pb-4">
+								<img alt="The project logo" class="h-full" src={imageUrl} />
+							</div>
+						{/if}
 					</Card.Content>
 					<Card.Footer class=" flex items-center justify-center border-t px-6 py-4">
 						<Button>Generate report</Button>
