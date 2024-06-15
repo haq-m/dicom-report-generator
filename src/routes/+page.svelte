@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { Button } from '@shadcn/ui/button';
 	import * as Card from '@shadcn/ui/card';
-	import { Input } from '@shadcn/ui/input';
 	import * as dicomjs from 'dicom.ts';
 
+	// Vars
 	let files: FileList;
-	let value: any;
 	let imageUrl: string = '';
+
+	// Reactivity
 	$: onFilesDropped(files);
+
+	// Functions
 	async function onFilesDropped(files: FileList) {
 		if (!files) {
 			return;
@@ -17,11 +20,11 @@
 		let arrayBuffer = await files[0].arrayBuffer();
 		const image = dicomjs.parseImage(arrayBuffer);
 		const renderer = new dicomjs.Renderer(canvas);
-		// Decode and render frame 0 on the canvas
+		// TODO: Decode and render frame 0 on the canvas
+		// Eventually let user to select frames within the file
 		await renderer.render(image, 0);
 		imageUrl = canvas.toDataURL();
 	}
-	console.log('HERE', value);
 </script>
 
 <div class="flex flex-col min-h-screen w-full">
@@ -43,7 +46,6 @@
 						</Card.Description>
 					</Card.Header>
 					<Card.Content>
-						<!-- <Input type="file" accept=".dcm" /> -->
 						<input
 							type="file"
 							bind:files

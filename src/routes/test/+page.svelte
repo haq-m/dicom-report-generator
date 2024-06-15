@@ -1,4 +1,4 @@
-<!-- <script lang="ts">
+<script lang="ts">
 	import * as dicomjs from 'dicom.ts';
 
 	let files: FileList;
@@ -41,13 +41,13 @@
 	{#each files as file}
 		<p>{file.name}</p>
 	{/each}
-{/if} -->
+{/if}
 
 <div class="w-96 h-96">
 	<!-- <canvas class="hidden" bind:this={canvas} /> -->
 	<div>HELLO 1</div>
-	<!-- {#each imageUrl as url}
+	{#each imageUrl as url}
 		<div>HELLO 2</div>
 		<img alt="The project logo" src={url} />
-	{/each} -->
+	{/each}
 </div>
