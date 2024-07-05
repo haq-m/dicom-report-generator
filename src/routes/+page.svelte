@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Button } from '@shadcn/ui/button';
 	import * as Card from '@shadcn/ui/card';
 	import * as dicomjs from 'dicom.ts';
+	import { imagesStore, type DicomTag } from './stores';
 
 	// Vars
 	let files: FileList;
@@ -10,6 +12,8 @@
 	// Reactivity
 	$: onFilesDropped(files);
 
+	//todo:make value array
+	let dicomTagList: DicomTag[] = [];
 	// Functions
 	async function onFilesDropped(files: FileList) {
 		if (!files) {
@@ -19,11 +23,66 @@
 		let canvas: HTMLCanvasElement = document.createElement('canvas');
 		let arrayBuffer = await files[0].arrayBuffer();
 		const image = dicomjs.parseImage(arrayBuffer);
+		// console.log(image);
+		// var k = image.tags['00020003'].getConvertedValue();
+		// console.log(k[0]);
+		logImageTags(image);
 		const renderer = new dicomjs.Renderer(canvas);
 		// TODO: Decode and render frame 0 on the canvas
 		// Eventually let user to select frames within the file
 		await renderer.render(image, 0);
 		imageUrl = canvas.toDataURL();
+		$imagesStore = { Path: '', Base64Image: imageUrl, Tags: dicomTagList };
+		console.log('DONE', dicomTagList);
+	}
+
+	const logImageTags = (image: any) => {
+		let str = '';
+		// Object.keys(image.tags).forEach((key) => {
+		// 	str += image.tags[key].toString();
+		// 	str += '\n';
+		// 	console.log();
+		// });
+
+		// console.log(str);
+		dicomTagList = [];
+		for (const [key, value] of Object.entries(image.tags)) {
+			// console.log(
+			// 	'CONVERTED VALUE',
+			// 	key,
+			// 	image.tags[key] === null
+			// 		? 'is null'
+			// 		: `${image.tags[key].getConvertedValue()} + ${image.tags[key].toString()}, ${image.tags[key].toObject()['group']}`
+			// );
+			// console.log(`${key}: ${value}`);
+			let tag = getDescriptionName(key, `${value}`, image.tags[key].getConvertedValue());
+			if (tag) {
+				dicomTagList.push(tag);
+			}
+		}
+	};
+
+	function escapeRegex(regex: string) {
+		return regex.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+	}
+	function getDescriptionName(
+		dicomId: string,
+		displayName: string,
+		value: string
+	): DicomTag | null {
+		const group: string = dicomId.substring(0, 4);
+		const element: string = dicomId.substring(4, 8);
+		const regexStr: string = `(?<=${escapeRegex(`(${group},${element})`)})(.*)(?=${escapeRegex(`[${value}]`)})`;
+		// console.log('REGEX TEXT: ', regexStr);
+		let regex: RegExp = new RegExp(regexStr);
+		let match = displayName.match(regex);
+		console.log('VALUE:', match?.at(1)?.trim(), match);
+		let des = match?.at(1)?.trim();
+
+		if (des) {
+			return { Group: group, Element: element, Description: des, Value: value };
+		}
+		return null;
 	}
 </script>
 
@@ -60,10 +119,18 @@
 						{/if}
 					</Card.Content>
 					<Card.Footer class=" flex items-center justify-center border-t px-6 py-4">
-						<Button>Generate report</Button>
+						<Button
+							disabled={imageUrl.length < 1}
+							on:click={() => {
+								goto('/generate-report');
+							}}
+						>
+							Generate report
+						</Button>
 					</Card.Footer>
 				</Card.Root>
 			</div>
+			<div>hello</div>
 		</div>
 	</main>
 </div>
