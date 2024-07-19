@@ -84,9 +84,25 @@
 		}
 		return null;
 	}
+
+	function onDownloadButtonClicked() {
+		let element = document.getElementById('frontpage');
+		// html2pdf(element);
+		var options = {
+			jsPDF: {
+				format: 'a4'
+			},
+			html2canvas: { letterRendering: true, useCORS: true, logging: true },
+			margin: 5,
+			image: { type: 'jpeg', quality: 1 },
+			filename: 'myfile.pdf'
+		};
+		html2pdf().from(element).toCanvas().set(options).save();
+		// html2pdf().from(element).toPdf().save('myfile.pdf');
+	}
 </script>
 
-<div class="flex flex-col min-h-screen w-full">
+<div id="frontpage" class="flex flex-col min-h-screen w-full">
 	<header class="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
 		<div class="flex w-full justify-center items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
 			TITLE
@@ -130,7 +146,16 @@
 					</Card.Footer>
 				</Card.Root>
 			</div>
-			<div>hello</div>
+			<div on:click={onDownloadButtonClicked}>hello</div>
+
+			<div class="p-4 flex flex-col bg-white pt-4 pb-4">
+				{#if $imagesStore?.Tags}
+					{#each $imagesStore?.Tags as tag}
+						<div>{`(${tag.Group},${tag.Element}) ${tag.Group}`}</div>
+						<div>{`${tag.Value}`}</div>
+					{/each}
+				{/if}
+			</div>
 		</div>
 	</main>
 </div>
