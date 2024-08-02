@@ -14,6 +14,7 @@
 
 	//todo:make value array
 	let dicomTagList: DicomTag[] = [];
+
 	// Functions
 	async function onFilesDropped(files: FileList) {
 		if (!files) {
@@ -23,48 +24,31 @@
 		let canvas: HTMLCanvasElement = document.createElement('canvas');
 		let arrayBuffer = await files[0].arrayBuffer();
 		const image = dicomjs.parseImage(arrayBuffer);
-		// console.log(image);
-		// var k = image.tags['00020003'].getConvertedValue();
-		// console.log(k[0]);
-		logImageTags(image);
+		dicomTagList = getDicomTag(image);
 		const renderer = new dicomjs.Renderer(canvas);
+
 		// TODO: Decode and render frame 0 on the canvas
-		// Eventually let user to select frames within the file
+		// Eventually let user select frames within the file
 		await renderer.render(image, 0);
 		imageUrl = canvas.toDataURL();
 		$imagesStore = { Path: '', Base64Image: imageUrl, Tags: dicomTagList };
-		console.log('DONE', dicomTagList);
 	}
 
-	const logImageTags = (image: any) => {
-		let str = '';
-		// Object.keys(image.tags).forEach((key) => {
-		// 	str += image.tags[key].toString();
-		// 	str += '\n';
-		// 	console.log();
-		// });
-
-		// console.log(str);
-		dicomTagList = [];
+	function getDicomTag(image: any): DicomTag[] {
+		let tags = [];
 		for (const [key, value] of Object.entries(image.tags)) {
-			// console.log(
-			// 	'CONVERTED VALUE',
-			// 	key,
-			// 	image.tags[key] === null
-			// 		? 'is null'
-			// 		: `${image.tags[key].getConvertedValue()} + ${image.tags[key].toString()}, ${image.tags[key].toObject()['group']}`
-			// );
-			// console.log(`${key}: ${value}`);
-			let tag = getDescriptionName(key, `${value}`, image.tags[key].getConvertedValue());
+			const tag = getDescriptionName(key, `${value}`, image.tags[key].getConvertedValue());
 			if (tag) {
-				dicomTagList.push(tag);
+				tags.push(tag);
 			}
 		}
-	};
+		return tags;
+	}
 
 	function escapeRegex(regex: string) {
 		return regex.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
 	}
+
 	function getDescriptionName(
 		dicomId: string,
 		displayName: string,
@@ -73,7 +57,6 @@
 		const group: string = dicomId.substring(0, 4);
 		const element: string = dicomId.substring(4, 8);
 		const regexStr: string = `(?<=${escapeRegex(`(${group},${element})`)})(.*)(?=${escapeRegex(`[${value}]`)})`;
-		// console.log('REGEX TEXT: ', regexStr);
 		let regex: RegExp = new RegExp(regexStr);
 		let match = displayName.match(regex);
 		console.log('VALUE:', match?.at(1)?.trim(), match);
@@ -98,7 +81,6 @@
 			filename: 'myfile.pdf'
 		};
 		html2pdf().from(element).toCanvas().set(options).save();
-		// html2pdf().from(element).toPdf().save('myfile.pdf');
 	}
 </script>
 
@@ -145,16 +127,6 @@
 						</Button>
 					</Card.Footer>
 				</Card.Root>
-			</div>
-			<div on:click={onDownloadButtonClicked}>hello</div>
-
-			<div class="p-4 flex flex-col bg-white pt-4 pb-4">
-				{#if $imagesStore?.Tags}
-					{#each $imagesStore?.Tags as tag}
-						<div>{`(${tag.Group},${tag.Element}) ${tag.Group}`}</div>
-						<div>{`${tag.Value}`}</div>
-					{/each}
-				{/if}
 			</div>
 		</div>
 	</main>

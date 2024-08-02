@@ -2,6 +2,7 @@
 	import Button from '@shadcn/ui/button/button.svelte';
 	import { imagesStore } from '../stores';
 	import { goto } from '$app/navigation';
+	import EditableLineEdit from '../EditableLineEdit.svelte';
 
 	let imageTags = $imagesStore?.Tags;
 
@@ -16,8 +17,8 @@
 			jsPDF: {
 				format: 'a4'
 			},
-			html2canvas: { letterRendering: true, useCORS: true, logging: true },
-			margin: [20, 20, 20, 20], // Set appropriate margins
+			html2canvas: { letterRendering: true, useCORS: true, logging: false },
+			margin: 5, // Set appropriate margins
 			autoPaging: 'text', // Crucial for handling text flow across pages
 			image: { type: 'jpeg', quality: 1 },
 			filename: 'myfile.pdf'
@@ -48,11 +49,10 @@
 			<div class="w-full p-8 grid grid-cols-3">
 				<div class="border flex flex-col">
 					<div>LOGO</div>
-					<div>Your Company</div>
-					<div>Your Name</div>
-					<div>Company Name</div>
-					<div>City, State Zip</div>
-					<div>Country</div>
+					<EditableLineEdit placeholder="Company Name" />
+					<EditableLineEdit placeholder="Your Name" />
+					<EditableLineEdit placeholder="City, State Zip" />
+					<EditableLineEdit placeholder="Country" />
 				</div>
 				<div class="grow"></div>
 				<div class="flex justify-center border font-medium">Report</div>
