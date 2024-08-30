@@ -1,0 +1,16 @@
+import { writable } from 'svelte/store';
+
+export interface DicomTag {
+	Group: string;
+	Element: string;
+	Description: string;
+	Value: string;
+}
+
+export interface Image {
+	Path: string;
+	Base64Image: string;
+	Tags: DicomTag[];
+}
+
+export const imagesStore = writable<Image | null>(null);

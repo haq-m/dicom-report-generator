@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Button } from '@shadcn/ui/button';
 	import * as Card from '@shadcn/ui/card';
 	import * as dicomjs from 'dicom.ts';
+	import { imagesStore, type DicomTag } from './stores';
 
 	// Vars
 	let files: FileList;
@@ -9,6 +11,9 @@
 
 	// Reactivity
 	$: onFilesDropped(files);
+
+	//todo:make value array
+	let dicomTagList: DicomTag[] = [];
 
 	// Functions
 	async function onFilesDropped(files: FileList) {
@@ -19,15 +24,67 @@
 		let canvas: HTMLCanvasElement = document.createElement('canvas');
 		let arrayBuffer = await files[0].arrayBuffer();
 		const image = dicomjs.parseImage(arrayBuffer);
+		dicomTagList = getDicomTag(image);
 		const renderer = new dicomjs.Renderer(canvas);
+
 		// TODO: Decode and render frame 0 on the canvas
-		// Eventually let user to select frames within the file
+		// Eventually let user select frames within the file
 		await renderer.render(image, 0);
 		imageUrl = canvas.toDataURL();
+		$imagesStore = { Path: '', Base64Image: imageUrl, Tags: dicomTagList };
+	}
+
+	function getDicomTag(image: any): DicomTag[] {
+		let tags = [];
+		for (const [key, value] of Object.entries(image.tags)) {
+			const tag = getDescriptionName(key, `${value}`, image.tags[key].getConvertedValue());
+			if (tag) {
+				tags.push(tag);
+			}
+		}
+		return tags;
+	}
+
+	function escapeRegex(regex: string) {
+		return regex.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+	}
+
+	function getDescriptionName(
+		dicomId: string,
+		displayName: string,
+		value: string
+	): DicomTag | null {
+		const group: string = dicomId.substring(0, 4);
+		const element: string = dicomId.substring(4, 8);
+		const regexStr: string = `(?<=${escapeRegex(`(${group},${element})`)})(.*)(?=${escapeRegex(`[${value}]`)})`;
+		let regex: RegExp = new RegExp(regexStr);
+		let match = displayName.match(regex);
+		console.log('VALUE:', match?.at(1)?.trim(), match);
+		let des = match?.at(1)?.trim();
+
+		if (des) {
+			return { Group: group, Element: element, Description: des, Value: value };
+		}
+		return null;
+	}
+
+	function onDownloadButtonClicked() {
+		let element = document.getElementById('frontpage');
+		// html2pdf(element);
+		var options = {
+			jsPDF: {
+				format: 'a4'
+			},
+			html2canvas: { letterRendering: true, useCORS: true, logging: true },
+			margin: 5,
+			image: { type: 'jpeg', quality: 1 },
+			filename: 'myfile.pdf'
+		};
+		html2pdf().from(element).toCanvas().set(options).save();
 	}
 </script>
 
-<div class="flex flex-col min-h-screen w-full">
+<div id="frontpage" class="flex flex-col min-h-screen w-full">
 	<header class="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
 		<div class="flex w-full justify-center items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
 			TITLE
@@ -60,7 +117,14 @@
 						{/if}
 					</Card.Content>
 					<Card.Footer class=" flex items-center justify-center border-t px-6 py-4">
-						<Button>Generate report</Button>
+						<Button
+							disabled={imageUrl.length < 1}
+							on:click={() => {
+								goto('/generate-report');
+							}}
+						>
+							Generate report
+						</Button>
 					</Card.Footer>
 				</Card.Root>
 			</div>
