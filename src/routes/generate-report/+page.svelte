@@ -3,27 +3,38 @@
 	import { imagesStore } from '../stores';
 	import { goto } from '$app/navigation';
 	import EditableLineEdit from '../EditableLineEdit.svelte';
+	import EditableTextComponent from './EditableTextComponent.svelte';
 
-	let imageTags = $imagesStore?.Tags;
-
-	let imageUrl = $imagesStore?.Base64Image
+	const imageTags = $imagesStore?.Tags;
+	const imageUrl = $imagesStore?.Base64Image
 		? $imagesStore?.Base64Image
 		: 'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg';
 
+	let properties: PropertyView[] = [];
+	properties.push({ displayName: 'Comments', value: '' });
+
 	function onDownloadButtonClicked() {
 		let element = document.getElementById('page-to-print');
+		let clonedElement = element?.cloneNode(true) as HTMLElement;
+		let forms = clonedElement!.querySelectorAll('input');
+		forms.forEach((form) => {
+			if (form.value != null || form.value === '') {
+				form.placeholder = '';
+			}
+		});
+
 		// html2pdf(element);
 		var options = {
 			jsPDF: {
 				format: 'a4'
 			},
-			html2canvas: { letterRendering: true, useCORS: true, logging: false },
+			html2canvas: { letterRendering: true, useCORS: true, logging: false, scale: 2 },
 			margin: 5, // Set appropriate margins
 			autoPaging: 'text', // Crucial for handling text flow across pages
 			image: { type: 'jpeg', quality: 1 },
 			filename: 'myfile.pdf'
 		};
-		html2pdf().from(element).toCanvas().set(options).save();
+		html2pdf().from(clonedElement).toCanvas().set(options).save();
 	}
 </script>
 
@@ -43,11 +54,11 @@
 	</Button>
 	<Button on:click={onDownloadButtonClicked}>Download PDF</Button>
 </div>
-<div class="flex flex-col w-full bg-gray-100 overflow-scroll">
-	<div id="page-to-print" class="mx-auto w-full max-w-[50rem] items-start gap-6 pt-10">
-		<div class="flex flex-col bg-white shadow-sm rounded-md">
+<div class="flex flex-col w-full bg-gray-100 overflow-scroll rounded-md pt-10 pb-10">
+	<div id="page-to-print" class="mx-auto w-full max-w-[50rem] items-start gap-6 border bg-white">
+		<div class="flex flex-col bg-white shadow-sm">
 			<div class="w-full p-8 grid grid-cols-3">
-				<div class="border flex flex-col">
+				<div class="border flex flex-col gap-y-1">
 					<div>LOGO</div>
 					<EditableLineEdit placeholder="Company Name" />
 					<EditableLineEdit placeholder="Your Name" />
@@ -57,19 +68,46 @@
 				<div class="grow"></div>
 				<div class="flex justify-center border font-medium">Report</div>
 			</div>
-			<div class="bg-black text-white">Images</div>
+
+			<!-- IMAGES SECTION -->
+			<div class="bg-black text-white pl-2">Images</div>
 			<div class="flex items-center justify-center bg-pink-100 pt-4 pb-4">
 				<img alt="The project logo" src={imageUrl} height="90" width="90" />
 			</div>
 
-			<div class="bg-black text-white">DICOM Metadata</div>
+			<!-- DICOM METADATA SECTION -->
+			<div class="bg-black text-white pl-2">DICOM Metadata</div>
 			<div class="p-4 flex flex-col bg-white pt-4 pb-4">
 				{#if imageTags}
 					{#each imageTags as tag}
-						<div>{`(${tag.Group},${tag.Element}) ${tag.Group}`}</div>
-						<div>{`${tag.Value}`}</div>
+						<div class="p-2">
+							<div class="pb-1 font-bold">{`(${tag.Group},${tag.Element}) ${tag.Description}`}</div>
+							<div>{`${tag.Value}`}</div>
+						</div>
 					{/each}
 				{/if}
+			</div>
+
+			<!-- CUSTOM PROPERTY SECTION / REPORT NOTES SECTION -->
+			<div class="bg-black text-white pl-2">NOTES</div>
+			<div class="p-4 bg-white pt-4 pb-4">
+				{#each properties as property, index}
+					<EditableTextComponent
+						bind:property
+						deleteFunc={() => {
+							properties.splice(index, 1);
+							properties = properties;
+						}}
+					/>
+				{/each}
+				<Button
+					on:click={() => {
+						properties.push({ displayName: 'Test Displayname', value: 'test value' });
+						properties = properties;
+					}}
+				>
+					<div class="flex align-middle items-center gap-x-2">+ Add line item</div>
+				</Button>
 			</div>
 		</div>
 	</div>

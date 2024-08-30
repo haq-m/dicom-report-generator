@@ -1,12 +1,13 @@
 <script lang="ts">
+	// Props
 	export let editMode: boolean = false;
 	export let placeholder: string = '';
-
-	let value: string = '';
+	export let value: string = '';
 </script>
 
-<div class="p-2">
+<div class="w-full">
 	<input
+		class="w-full p-1"
 		readonly={!editMode}
 		type="text"
 		{value}
