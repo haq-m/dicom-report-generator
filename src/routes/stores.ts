@@ -6,6 +6,7 @@ export interface DicomTag {
 	Element: string;
 	Description: string;
 	Value: string;
+	Selected: boolean;
 }
 
 export interface Image {
