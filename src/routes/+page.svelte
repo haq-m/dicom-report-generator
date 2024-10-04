@@ -8,6 +8,7 @@
 	// Vars
 	let files: FileList;
 	let imageUrl: string = '';
+	let idCounter: number = 0;
 
 	// Reactivity
 	$: onFilesDropped(files);
@@ -63,7 +64,13 @@
 		let des = match?.at(1)?.trim();
 
 		if (des) {
-			return { Group: group, Element: element, Description: des, Value: value };
+			return {
+				Id: (idCounter++).toString(),
+				Group: group,
+				Element: element,
+				Description: des,
+				Value: value
+			};
 		}
 		return null;
 	}

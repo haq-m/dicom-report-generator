@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 
 export interface DicomTag {
+	Id: string;
 	Group: string;
 	Element: string;
 	Description: string;
