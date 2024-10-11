@@ -69,7 +69,8 @@
 				Group: group,
 				Element: element,
 				Description: des,
-				Value: value
+				Value: value,
+				Selected: false
 			};
 		}
 		return null;
@@ -88,6 +89,27 @@
 			filename: 'myfile.pdf'
 		};
 		html2pdf().from(element).toCanvas().set(options).save();
+	}
+
+	async function onStaticFileClicked(path: string) {
+		let arrayBuffer: ArrayBuffer | undefined = undefined;
+		fetch(path)
+			.then((res) => res.blob()) // Gets the response and returns it as a blob
+			.then(async (blob) => {
+				console.log('IN HERE');
+				arrayBuffer = await blob.arrayBuffer();
+				let canvas: HTMLCanvasElement = document.createElement('canvas');
+				// arrayBuffer = await files[0].arrayBuffer();
+				const image = dicomjs.parseImage(arrayBuffer);
+				dicomTagList = getDicomTag(image);
+				const renderer = new dicomjs.Renderer(canvas);
+
+				// TODO: Decode and render frame 0 on the canvas
+				// Eventually let user select frames within the file
+				await renderer.render(image, 0);
+				imageUrl = canvas.toDataURL();
+				$imagesStore = { Path: '', Base64Image: imageUrl, Tags: dicomTagList };
+			});
 	}
 </script>
 
@@ -111,12 +133,28 @@
 					</Card.Header>
 					<Card.Content>
 						<input
+							id="input"
 							type="file"
 							bind:files
 							multiple
 							accept=".dcm"
 							class={'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'}
 						/>
+						<div class="flex p-2 text-sm bg-yellow-100 rounded-md">
+							<div>Use example images instead:</div>
+							<!-- svelte-ignore a11y-interactive-supports-focus -->
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
+							<div
+								class="pl-2 text-blue-500 hover:cursor-pointer"
+								role="button"
+								on:click={() => {
+									onStaticFileClicked('./mrbrain.dcm');
+								}}
+							>
+								mrbrain.dcm
+							</div>
+						</div>
+
 						{#if imageUrl.length}
 							<div class="flex items-center justify-center h-96 bg-pink-100 pt-4 pb-4">
 								<img alt="The project logo" class="h-full" src={imageUrl} />
