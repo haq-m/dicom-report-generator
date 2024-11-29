@@ -16,3 +16,21 @@ export interface Image {
 }
 
 export const imagesStore = writable<Image | null>(null);
+
+export interface DicomTagsTable {
+	SelectedIds: Set<string>;
+}
+
+export const DicomTagsTableStore = createDicomTagsTableStore();
+
+export function createDicomTagsTableStore() {
+	const { subscribe, set, update } = writable<DicomTagsTable>({
+		SelectedIds: new Set<string>()
+	});
+
+	return {
+		subscribe,
+		set,
+		update
+	};
+}

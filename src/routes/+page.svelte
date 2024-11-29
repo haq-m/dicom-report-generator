@@ -60,7 +60,6 @@
 		const regexStr: string = `(?<=${escapeRegex(`(${group},${element})`)})(.*)(?=${escapeRegex(`[${value}]`)})`;
 		let regex: RegExp = new RegExp(regexStr);
 		let match = displayName.match(regex);
-		console.log('VALUE:', match?.at(1)?.trim(), match);
 		let des = match?.at(1)?.trim();
 
 		if (des) {
@@ -96,7 +95,6 @@
 		fetch(path)
 			.then((res) => res.blob()) // Gets the response and returns it as a blob
 			.then(async (blob) => {
-				console.log('IN HERE');
 				arrayBuffer = await blob.arrayBuffer();
 				let canvas: HTMLCanvasElement = document.createElement('canvas');
 				// arrayBuffer = await files[0].arrayBuffer();

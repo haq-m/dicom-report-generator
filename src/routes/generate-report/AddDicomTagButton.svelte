@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { buttonVariants } from '@shadcn/ui/button';
 	import * as Dialog from '@shadcn/ui/dialog';
-	import type { DicomTag } from '../stores';
 	import DicomTagTable from './DicomTagTable.svelte';
 	import Button from '@shadcn/ui/button/button.svelte';
-	import { type Image } from '../stores';
+	import { DicomTagsTableStore, type Image } from '../stores';
 
 	// Props
 	export let image: Image;
@@ -12,33 +11,19 @@
 	// Locals
 	let dialogOpen = false;
 	let searchInput: string = '';
-	let selectedIds: string[] = getAllSelected();
+	let dicomTableStore = $DicomTagsTableStore;
 
 	// Functions
-	function getAllSelected(): string[] {
-		let list: string[] = [];
-		image.Tags.forEach((element) => {
-			if (element.Selected) {
-				list.push(element.Id);
-			}
-		});
-
-		return list;
-	}
-
 	function onSaveButtonClicked() {
-		image.Tags.forEach((element) => {
-			var found = selectedIds.findIndex((x) => x === element.Id);
-			if (found !== -1) {
-				element.Selected = true;
-				console.log('FOUND', element);
+		image.Tags.forEach((tag) => {
+			if (dicomTableStore.SelectedIds.has(tag.Id)) {
+				tag.Selected = true;
 				return;
 			}
-			element.Selected = false;
+			tag.Selected = false;
 		});
 
 		image = image;
-		console.log('HEEY', image);
 		dialogOpen = false;
 	}
 </script>
@@ -63,7 +48,7 @@
 
 		<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 			{#if image !== undefined}
-				<DicomTagTable bind:dicomTags={image.Tags} bind:selectedIds />
+				<DicomTagTable bind:dicomTags={image.Tags} />
 			{:else}
 				<div>DICOM Tags not available</div>
 			{/if}

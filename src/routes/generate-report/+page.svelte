@@ -4,21 +4,17 @@
 	import { goto } from '$app/navigation';
 	import EditableLineEdit from '../EditableLineEdit.svelte';
 	import EditableTextComponent from './EditableTextComponent.svelte';
-	import { createRender, createTable } from 'svelte-headless-table';
-	import { addSelectedRows, addSortBy, addTableFilter } from 'svelte-headless-table/plugins';
-	import { readable } from 'svelte/store';
-	import DataTableCheckbox from './data-table-checkbox.svelte';
 	import AddDicomTagButton from './AddDicomTagButton.svelte';
 
+	// Vars
 	const imageUrl = $imagesStore?.Base64Image
 		? $imagesStore?.Base64Image
 		: 'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg';
 
-	$: console.log($imagesStore?.Tags, 'CHANGED IN MAIN');
-
 	let properties: PropertyView[] = [];
 	properties.push({ displayName: 'Comments', value: '' });
 
+	// Functions
 	function onDownloadButtonClicked() {
 		let element = document.getElementById('page-to-print');
 		let clonedElement = element?.cloneNode(true) as HTMLElement;
@@ -29,7 +25,6 @@
 			}
 		});
 
-		// html2pdf(element);
 		var options = {
 			jsPDF: {
 				format: 'a4'

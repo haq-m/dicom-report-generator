@@ -1,30 +1,47 @@
 <script lang="ts">
-	import type { DicomTag } from '../stores';
+	import { onMount } from 'svelte';
+	import { type DicomTag, DicomTagsTableStore } from '../stores';
 
 	// Props
 	export let tag: DicomTag;
-	export let selectedIds: string[];
 
 	// Locals
 	let checked: boolean = tag.Selected;
+	let mounted: boolean = false;
 
 	// Reactivity
 	$: onCheckedChanged(checked);
+	$: onSelectedIdsChanged($DicomTagsTableStore.SelectedIds);
 
-	function onCheckedChanged(value: boolean) {
-		// console.log('ON checkbox', index, tag.Id, selectedIds);
-		if (value) {
-			selectedIds.push(tag.Id);
+	// Functions
+	function onCheckedChanged(value: boolean): void {
+		if (!mounted) {
 			return;
 		}
-		const index = selectedIds.indexOf(tag.Id, 0);
-		if (index > -1) {
-			selectedIds.splice(index, 1);
-			console.log('REMOVED', index, tag.Id, selectedIds);
+
+		if (value) {
+			$DicomTagsTableStore.SelectedIds.add(tag.Id);
+			$DicomTagsTableStore.SelectedIds = $DicomTagsTableStore.SelectedIds;
+			return;
 		}
 
-		selectedIds = selectedIds;
+		$DicomTagsTableStore.SelectedIds.forEach((x) => {
+			if (x === tag.Id) {
+				$DicomTagsTableStore.SelectedIds.delete(x);
+			}
+		});
+
+		$DicomTagsTableStore.SelectedIds = $DicomTagsTableStore.SelectedIds;
 	}
+
+	function onSelectedIdsChanged(list: Set<string>) {
+		checked = list.has(tag.Id);
+	}
+
+	// Lifecycles
+	onMount(() => {
+		mounted = true;
+	});
 </script>
 
 <input
