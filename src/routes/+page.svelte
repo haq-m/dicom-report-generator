@@ -75,21 +75,6 @@
 		return null;
 	}
 
-	function onDownloadButtonClicked() {
-		let element = document.getElementById('frontpage');
-		// html2pdf(element);
-		var options = {
-			jsPDF: {
-				format: 'a4'
-			},
-			html2canvas: { letterRendering: true, useCORS: true, logging: true },
-			margin: 5,
-			image: { type: 'jpeg', quality: 1 },
-			filename: 'myfile.pdf'
-		};
-		html2pdf().from(element).toCanvas().set(options).save();
-	}
-
 	async function onStaticFileClicked(path: string) {
 		let arrayBuffer: ArrayBuffer | undefined = undefined;
 		fetch(path)
