@@ -4,8 +4,9 @@
 	import { goto } from '$app/navigation';
 	import EditableLineEdit from '../EditableLineEdit.svelte';
 	import EditableTextComponent from './EditableTextComponent.svelte';
+	import AddDicomTagButton from './AddDicomTagButton.svelte';
 
-	const imageTags = $imagesStore?.Tags;
+	// Vars
 	const imageUrl = $imagesStore?.Base64Image
 		? $imagesStore?.Base64Image
 		: 'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg';
@@ -13,6 +14,7 @@
 	let properties: PropertyView[] = [];
 	properties.push({ displayName: 'Comments', value: '' });
 
+	// Functions
 	function onDownloadButtonClicked() {
 		let element = document.getElementById('page-to-print');
 		let clonedElement = element?.cloneNode(true) as HTMLElement;
@@ -23,7 +25,6 @@
 			}
 		});
 
-		// html2pdf(element);
 		var options = {
 			jsPDF: {
 				format: 'a4'
@@ -70,20 +71,32 @@
 			</div>
 
 			<!-- IMAGES SECTION -->
-			<div class="bg-black text-white pl-2">Images</div>
+			<div class="flex bg-black text-white pl-2">
+				<div>Images</div>
+			</div>
 			<div class="flex items-center justify-center bg-pink-100 pt-4 pb-4">
 				<img alt="The project logo" src={imageUrl} height="90" width="90" />
 			</div>
 
 			<!-- DICOM METADATA SECTION -->
-			<div class="bg-black text-white pl-2">DICOM Metadata</div>
+			<div class="flex bg-black text-white pl-2">
+				<div>DICOM Metadata</div>
+				<div class="pl-2 pr-2"></div>
+				{#if $imagesStore !== null && $imagesStore.Tags !== undefined}
+					<AddDicomTagButton bind:image={$imagesStore} />
+				{/if}
+			</div>
 			<div class="p-4 flex flex-col bg-white pt-4 pb-4">
-				{#if imageTags}
-					{#each imageTags as tag}
-						<div class="p-2">
-							<div class="pb-1 font-bold">{`(${tag.Group},${tag.Element}) ${tag.Description}`}</div>
-							<div>{`${tag.Value}`}</div>
-						</div>
+				{#if $imagesStore !== null && $imagesStore.Tags !== undefined}
+					{#each $imagesStore.Tags as tag (`${tag.Id}-${tag.Selected}`)}
+						{#if tag.Selected}
+							<div class="p-2">
+								<div class="pb-1 font-bold">
+									{`(${tag.Group},${tag.Element}) ${tag.Description}`}
+								</div>
+								<div>{`${tag.Value}`}</div>
+							</div>
+						{/if}
 					{/each}
 				{/if}
 			</div>

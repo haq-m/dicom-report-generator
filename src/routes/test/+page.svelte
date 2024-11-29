@@ -13,12 +13,12 @@
 			let canvas: HTMLCanvasElement = document.createElement('canvas');
 
 			let arrayBuffer = await file.arrayBuffer();
-			console.log('onFilesDropped', arrayBuffer);
+			// console.log('onFilesDropped', arrayBuffer);
 			const image = dicomjs.parseImage(arrayBuffer);
 			// access any tags needed, common ones have parameters
-			console.log('PatientID:', image.patientID);
+			// console.log('PatientID:', image.patientID);
 			// or use the DICOM tag group, element id pairs
-			console.log('PatientName:', image.getTagValue([0x0010, 0x0010]));
+			// console.log('PatientName:', image.getTagValue([0x0010, 0x0010]));
 
 			const renderer = new dicomjs.Renderer(canvas);
 
@@ -27,10 +27,8 @@
 			imageUrl.push(canvas.toDataURL());
 		}
 
-		console.log('finally', imageUrl);
 		imageUrl = imageUrl;
 	}
-	$: console.log('REACT', imageUrl);
 </script>
 
 <h1 class="text-2xl font-bold underline">
