@@ -55,11 +55,9 @@
 </script>
 
 <div class="w-full h-96">
-	<table
-		class="w-full h-96 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-y-auto"
-	>
+	<table class="w-full h-96 text-sm overflow-hidden rounded-md table-auto border-none">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-			<tr>
+			<tr class="h-12">
 				<th scope="col" class="p-4">
 					<div class="flex items-center">
 						<input
@@ -78,10 +76,11 @@
 			</tr>
 		</thead>
 
-		<tbody>
+		<tbody class="h-min">
 			{#each dicomTags as item (`${item.Id}${item.Value}`)}
 				<DicomTagRow dicomItem={item} searchInput={$DicomTagsTableStore.SearchInput}></DicomTagRow>
 			{/each}
 		</tbody>
 	</table>
+	<div class="grow"></div>
 </div>
