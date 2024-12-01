@@ -63,12 +63,19 @@
 		let des = match?.at(1)?.trim();
 
 		if (des) {
+			let sanitizedValue = '';
+			const objectType = Object.prototype.toString.call(value);
+			if (objectType === '[object Array]') {
+				sanitizedValue = value.toString();
+			} else {
+				sanitizedValue = JSON.stringify(value);
+			}
 			return {
 				Id: (idCounter++).toString(),
 				Group: group,
 				Element: element,
 				Description: des,
-				Value: value,
+				Value: sanitizedValue,
 				Selected: false
 			};
 		}

@@ -10,7 +10,6 @@
 
 	// Locals
 	let dialogOpen = false;
-	let searchInput: string = '';
 	let dicomTableStore = $DicomTagsTableStore;
 
 	// Functions
@@ -42,7 +41,7 @@
 				class="input bg-transparent p-1 border rounded-sm"
 				type="text"
 				placeholder="Search..."
-				bind:value={searchInput}
+				bind:value={$DicomTagsTableStore.SearchInput}
 			/>
 		</div>
 
