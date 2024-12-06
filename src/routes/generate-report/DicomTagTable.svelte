@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { DicomTagsTableStore, type DicomTag } from '../stores';
 	import DicomTagTableCheckbox from './DicomTagTableCheckbox.svelte';
+	import DicomTagRow from './DicomTagRow.svelte';
 
 	// Props
 	export let dicomTags: DicomTag[];
@@ -54,11 +55,9 @@
 </script>
 
 <div class="w-full h-96">
-	<table
-		class="w-full h-96 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 overflow-y-auto"
-	>
+	<table class="w-full h-96 text-sm overflow-hidden rounded-md table-auto border-none">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-			<tr>
+			<tr class="h-12">
 				<th scope="col" class="p-4">
 					<div class="flex items-center">
 						<input
@@ -70,7 +69,6 @@
 						<label for="checkbox-all-search" class="sr-only">checkbox</label>
 					</div>
 				</th>
-				<th scope="col" class="px-6 py-3"> ID </th>
 				<th scope="col" class="px-6 py-3"> Group </th>
 				<th scope="col" class="px-6 py-3"> Element </th>
 				<th scope="col" class="px-6 py-3"> Description </th>
@@ -78,29 +76,11 @@
 			</tr>
 		</thead>
 
-		<tbody>
+		<tbody class="h-min">
 			{#each dicomTags as item (`${item.Id}${item.Value}`)}
-				<tr
-					class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-				>
-					<td class="w-4 p-4">
-						<div class="flex items-center">
-							<DicomTagTableCheckbox tag={item} />
-							<label for="checkbox-table-search-3" class="sr-only">checkbox</label>
-						</div>
-					</td>
-					<th
-						scope="row"
-						class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-					>
-						{item.Id}
-					</th>
-					<td class="px-6 py-4"> {item.Group} </td>
-					<td class="px-6 py-4"> {item.Element} </td>
-					<td class="px-6 py-4"> {item.Description} </td>
-					<td class="px-6 py-4"> {item.Value} </td>
-				</tr>
+				<DicomTagRow dicomItem={item} searchInput={$DicomTagsTableStore.SearchInput}></DicomTagRow>
 			{/each}
 		</tbody>
 	</table>
+	<div class="grow"></div>
 </div>
