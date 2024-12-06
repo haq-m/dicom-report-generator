@@ -2,13 +2,9 @@
 	import { type DicomTag } from '../stores';
 	import DicomTagTableCheckbox from './DicomTagTableCheckbox.svelte';
 
-	// Consts
-	const emptyString = '[Empty]';
-
 	// Props
 	export let dicomItem: DicomTag;
 	export let searchInput: string;
-	// export let scrollArea: HTMLElement;
 	$: searchInput, console.log('SEARCHINPUT CHANGED', searchInput);
 
 	// Locals
@@ -43,14 +39,11 @@
 	}
 
 	function isDisplayTextAndSearchTextAMatch(searchText: string) {
-		// 	Group: string;
-		// Element: string;
-		// Description: string;
-		// Value
 		return (
 			dicomItem.Group.toLowerCase().includes(searchText.toLowerCase()) ||
 			dicomItem.Element.toLowerCase().includes(searchText.toLowerCase()) ||
-			dicomItem.Description.toLowerCase().includes(searchText.toLowerCase())
+			dicomItem.Description.toLowerCase().includes(searchText.toLowerCase()) ||
+			dicomItem.Value.toLowerCase().includes(searchText.toLowerCase())
 		);
 	}
 </script>
