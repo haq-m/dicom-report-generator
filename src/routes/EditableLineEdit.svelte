@@ -7,7 +7,7 @@
 
 <div class="w-full">
 	<input
-		class="w-full p-1"
+		class="w-full p-1 hover:bg-[#FDF4DB] focus:hover:bg-transparent"
 		readonly={!editMode}
 		type="text"
 		{value}

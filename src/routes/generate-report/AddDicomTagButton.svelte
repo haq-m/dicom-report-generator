@@ -4,6 +4,7 @@
 	import DicomTagTable from './DicomTagTable.svelte';
 	import Button from '@shadcn/ui/button/button.svelte';
 	import { DicomTagsTableStore, type Image } from '../stores';
+	import PlusSvg from '$lib/PlusSvg.svelte';
 
 	// Props
 	export let image: Image;
@@ -28,7 +29,16 @@
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
-	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Edit</Dialog.Trigger>
+	<Dialog.Trigger>
+		<div class="flex items-center">
+			<div class="align-middle self-center bg-[#26A65B] text-white font-extrabold rounded-full">
+				<div class="w-5 p-0.5">
+					<PlusSvg />
+				</div>
+			</div>
+			<div class="font-sans hover:underline text-[#428bca] pl-2">Add tags</div>
+		</div>
+	</Dialog.Trigger>
 	<Dialog.Content class="max-w-[50%] max-h-[70%]">
 		<Dialog.Header>
 			<Dialog.Title>DICOM Tags</Dialog.Title>
