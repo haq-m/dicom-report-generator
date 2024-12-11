@@ -6,6 +6,7 @@
 	import EditableTextComponent from './EditableTextComponent.svelte';
 	import AddDicomTagButton from './AddDicomTagButton.svelte';
 	import PlusSvg from '$lib/PlusSvg.svelte';
+	import ImagePlaceholder from './ImagePlaceholder.svelte';
 
 	// Vars
 	const imageUrl = $imagesStore?.Base64Image
@@ -79,7 +80,8 @@
 				<div>Images</div>
 			</div>
 			<div class="flex items-center justify-center pt-4 pb-4">
-				<img alt="The project logo" src={imageUrl} height="90" width="90" />
+				<!-- <img alt="The project logo" src={imageUrl} height="90" width="90" /> -->
+				<ImagePlaceholder src={imageUrl} buttons={{ remove: false, resize: true }} />
 			</div>
 
 			<!-- DICOM METADATA SECTION -->
