@@ -7,6 +7,7 @@
 	import AddDicomTagButton from './AddDicomTagButton.svelte';
 	import PlusSvg from '$lib/PlusSvg.svelte';
 	import ImagePlaceholder from './ImagePlaceholder.svelte';
+	import LogoPlaceholder from './LogoPlaceholder.svelte';
 
 	// Vars
 	const imageUrl = $imagesStore?.Base64Image
@@ -26,6 +27,11 @@
 			if (form.value != null || form.value === '') {
 				form.placeholder = '';
 			}
+		});
+
+		let toSkipElems = clonedElement.querySelectorAll('[data-skip]');
+		toSkipElems.forEach((element) => {
+			element.remove();
 		});
 
 		var options = {
@@ -60,12 +66,12 @@
 <div class="flex flex-col w-full bg-[#F2F3F5] overflow-scroll rounded-md pt-10 pb-10">
 	<div
 		id="page-to-print"
-		class="mx-auto w-full max-w-[50rem] items-start gap-6 border bg-white shadow-2xl drop-shadow-xl"
+		class="mx-auto w-full max-w-[50rem] items-start gap-6 bg-white shadow-2xl drop-shadow-xl"
 	>
 		<div class="flex flex-col bg-white shadow-sm">
 			<div class="w-full p-8 grid grid-cols-3">
-				<div class="border flex flex-col gap-y-1">
-					<div>LOGO</div>
+				<div class="flex flex-col gap-y-1">
+					<LogoPlaceholder accept=".png, .jpg, .jpeg"></LogoPlaceholder>
 					<EditableLineEdit placeholder="Company Name" />
 					<EditableLineEdit placeholder="Your Name" />
 					<EditableLineEdit placeholder="City, State Zip" />
@@ -80,7 +86,6 @@
 				<div>Images</div>
 			</div>
 			<div class="flex items-center justify-center pt-4 pb-4">
-				<!-- <img alt="The project logo" src={imageUrl} height="90" width="90" /> -->
 				<ImagePlaceholder src={imageUrl} buttons={{ remove: false, resize: true }} />
 			</div>
 
@@ -98,7 +103,9 @@
 						<!-- <div class="flex justify-center items-center text-gray-500 italic">
 							No DICOM tags selected
 						</div> -->
-						<!-- <AddDicomTagButton bind:image={$imagesStore} /> -->
+						<div data-skip="true" class="flex justify-center items-center">
+							<AddDicomTagButton bind:image={$imagesStore} />
+						</div>
 					{:else}
 						{#each $imagesStore.Tags as tag (`${tag.Id}-${tag.Selected}`)}
 							{#if tag.Selected}
@@ -110,7 +117,7 @@
 								</div>
 							{/if}
 						{/each}
-						<div class="flex justify-center items-center">
+						<div data-skip="true" class="flex justify-center items-center">
 							<AddDicomTagButton bind:image={$imagesStore} />
 						</div>
 					{/if}

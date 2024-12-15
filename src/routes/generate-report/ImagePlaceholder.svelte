@@ -1,7 +1,6 @@
 <script lang="ts">
 	import CrossSvg from '$lib/CrossSvg.svelte';
 	import ScalingSvg from '$lib/ScalingSvg.svelte';
-	import { Trigger } from '@shadcn/ui/dialog';
 	import * as Popover from '@shadcn/ui/popover';
 	import { Slider } from '@shadcn/ui/slider';
 
@@ -13,6 +12,7 @@
 	// Props
 	export let src: string;
 	export let buttons: EnableButtons = { resize: true, remove: true };
+	export let opacity: string = '';
 
 	// Local
 	let hover: boolean = false;
@@ -35,7 +35,7 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div
-	class="relative border p-3"
+	class="relative p-3 h-full w-full flex justify-center items-center"
 	on:mouseover={() => {
 		hover = true;
 	}}
@@ -43,8 +43,9 @@
 		hover = false;
 	}}
 >
-	<div class="absolute top-0 right-0 border">
-		<div class="flex space-x-1">
+	<div class="absolute top-0 right-0">
+		<!-- svelte-ignore a11y-interactive-supports-focus -->
+		<div class="flex space-x-1 w-full h-full">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div class="w-5 p-0.5" hidden={hideResize(hover, buttons.resize, resizeOpen)}>
 				<Popover.Root bind:open={resizeOpen}>
@@ -57,10 +58,21 @@
 				</Popover.Root>
 			</div>
 
-			<div class="w-5 p-0.5" hidden={!hover || !buttons.remove}>
+			<!-- svelte-ignore a11y-interactive-supports-focus -->
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div
+				class="w-5 p-0.5"
+				role="button"
+				hidden={!hover || !buttons.remove}
+				on:click={() => {
+					src = '';
+				}}
+			>
 				<CrossSvg />
 			</div>
 		</div>
 	</div>
-	<img alt="The project logo" {src} height={imageSize[0]} width={imageSize[0]} />
+	<div class="">
+		<img alt="The project logo" class={opacity} {src} height={imageSize[0]} width={imageSize[0]} />
+	</div>
 </div>
