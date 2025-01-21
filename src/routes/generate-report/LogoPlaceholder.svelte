@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { imagesStore } from '../stores';
 	import ImagePlaceholder from './ImagePlaceholder.svelte';
 
+	// Props
 	export let accept: string;
 
+	// Locals
 	let src: string | null = null;
 	let hover: boolean = false;
 	let files: FileList;
@@ -25,12 +28,21 @@
 		if (!files) {
 			return;
 		}
-		// var fileInput = document.getElementById("fileInput");
 		var file = files[0];
 		if (file) {
-			src = window.URL.createObjectURL(file);
+			const base64String = await toBase64(file);
+			if (typeof base64String === 'string') {
+				src = base64String;
+			}
 		}
 	}
+	const toBase64 = (file: File) =>
+		new Promise<string | ArrayBuffer | null>((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = reject;
+		});
 
 	function styleOnHover(isHover: boolean, imageSrc: string | null): string {
 		return isHover || imageSrc ? 'h-32' : 'h-7';
@@ -44,6 +56,7 @@
 </script>
 
 <input
+	data-skip="true"
 	name="files"
 	bind:files
 	bind:this={fileInput}
@@ -53,6 +66,7 @@
 	on:change={onFilesAdded}
 />
 
+<!-- <img alt="The project logo" src={imageUrl} />	 -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div
@@ -71,6 +85,7 @@
 	{#if src === null || src.length === 0}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<span
+			data-skip="true"
 			class="font-sans font-semibold text-[#AAAAAA] w-full h-full flex justify-center items-center"
 			on:click={onButtonClicked}>Your Logo</span
 		>

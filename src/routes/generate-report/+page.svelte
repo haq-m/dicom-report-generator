@@ -78,7 +78,9 @@
 					<EditableLineEdit placeholder="Country" />
 				</div>
 				<div class="grow"></div>
-				<div class="flex justify-center border font-medium">Report</div>
+				<div class="flex justify-center text-4xl font-mono">
+					<EditableLineEdit placeholder="Report" value="Report" />
+				</div>
 			</div>
 
 			<!-- IMAGES SECTION -->
@@ -138,7 +140,7 @@
 					<div class="border-b my-2 mx-4"></div>
 				{/each}
 
-				<div class="flex justify-center items-center">
+				<div data-skip="true" class="flex justify-center items-center">
 					<div class="align-middle self-center bg-[#26A65B] text-white font-extrabold rounded-full">
 						<div class="w-5 p-0.5">
 							<PlusSvg />
@@ -147,7 +149,7 @@
 					<button
 						class="font-sans hover:underline text-[#428bca] pl-2"
 						on:click={() => {
-							properties.push({ displayName: 'Test Displayname', value: 'test value' });
+							properties.push({ displayName: 'Title', value: '' });
 							properties = properties;
 						}}
 					>
