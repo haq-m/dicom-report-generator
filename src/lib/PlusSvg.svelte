@@ -8,8 +8,8 @@
 	stroke-width="3"
 	stroke-linecap="round"
 	stroke-linejoin="round"
-	class="lucide lucide-x"
+	class="lucide lucide-plus"
 >
-	<path d="M18 6 6 18" />
-	<path d="m6 6 12 12" />
+	<path d="M5 12h14" />
+	<path d="M12 5v14" />
 </svg>

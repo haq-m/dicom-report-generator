@@ -28,12 +28,12 @@
 		<EditableLineEdit placeholder="Enter text here..." value={property.value} />
 	</div>
 	<button
-		class="align-middle self-center bg-teal-400 rounded-full"
+		class="align-middle self-center bg-[#F03434] text-white font-extrabold rounded-full"
 		on:click={() => {
 			deleteFunc();
 		}}
 	>
-		<div class="w-5" hidden={!hover}>
+		<div class="w-5 p-0.5" hidden={!hover}>
 			<CrossSvg />
 		</div>
 	</button>

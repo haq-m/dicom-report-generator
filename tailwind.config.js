@@ -56,7 +56,12 @@ const config = {
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans]
-			}
+			},
+			extend: {
+				transitionProperty: {
+				  'height': 'height'
+				}
+			  }
 		}
 	},
 };
