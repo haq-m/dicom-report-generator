@@ -15,7 +15,6 @@
 	// Reactivity
 	$: onFilesDropped(files);
 
-	//todo:make value array
 	let dicomTagList: DicomTag[] = [];
 
 	// Functions
@@ -94,7 +93,6 @@
 				loading = true;
 				arrayBuffer = await blob.arrayBuffer();
 				let canvas: HTMLCanvasElement = document.createElement('canvas');
-				// arrayBuffer = await files[0].arrayBuffer();
 				const image = dicomjs.parseImage(arrayBuffer);
 				dicomTagList = getDicomTag(image);
 				const renderer = new dicomjs.Renderer(canvas);
@@ -110,11 +108,6 @@
 </script>
 
 <div id="frontpage" class="flex flex-col min-h-screen w-full">
-	<header class="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-		<div class="flex w-full justify-center items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-			TITLE
-		</div>
-	</header>
 	<main
 		class="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10"
 	>
@@ -122,8 +115,8 @@
 			<div class="grid gap-6">
 				<Card.Root>
 					<Card.Header>
-						<Card.Title class="flex justify-center">DICOM Report Generator</Card.Title>
-						<Card.Description class="flex justify-center">
+						<Card.Title class="flex justify-center p-4 text-xl">DICOM Report Generator</Card.Title>
+						<Card.Description class="flex justify-center text-base">
 							Start selecting DICOM file you wish to generate a report for
 						</Card.Description>
 					</Card.Header>
