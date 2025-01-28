@@ -115,7 +115,9 @@
 			<div class="grid gap-6">
 				<Card.Root>
 					<Card.Header>
-						<Card.Title class="flex justify-center p-4 text-xl">DICOM Report Generator</Card.Title>
+						<Card.Title class="flex justify-center p-4 text-xl"
+							>DICOM File to Report Generator</Card.Title
+						>
 						<Card.Description class="flex justify-center text-base">
 							Start selecting DICOM file you wish to generate a report for
 						</Card.Description>
