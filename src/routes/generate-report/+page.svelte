@@ -91,20 +91,14 @@
 				<ImagePlaceholder src={imageUrl} buttons={{ remove: false, resize: true }} />
 			</div>
 
-			<!-- DICOM METADATA SECTION -->
+			<!-- DICOM TAGS SECTION -->
 			<div class="flex mx-4 bg-[#666666] text-white font-sans font-semibold pl-2">
-				<div>DICOM Metadata</div>
+				<div>DICOM Tags</div>
 				<div class="pl-2 pr-2"></div>
-				{#if $imagesStore !== null && $imagesStore.Tags !== undefined}
-					<!-- <AddDicomTagButton bind:image={$imagesStore} /> -->
-				{/if}
 			</div>
 			<div class="p-4 flex flex-col bg-white pt-4 pb-4">
 				{#if $imagesStore !== null && $imagesStore.Tags !== undefined}
 					{#if $DicomTagsTableStore.SelectedIds.size === 0}
-						<!-- <div class="flex justify-center items-center text-gray-500 italic">
-							No DICOM tags selected
-						</div> -->
 						<div data-skip="true" class="flex justify-center items-center">
 							<AddDicomTagButton bind:image={$imagesStore} />
 						</div>
