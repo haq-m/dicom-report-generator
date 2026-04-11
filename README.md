@@ -1,38 +1,19 @@
-# create-svelte
+<p align="center">
+  <img src="image.png" alt="alt text" width="400">
+</p>
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+# DICOM Report Generator
 
-## Creating a project
+![Svelte](https://img.shields.io/badge/SvelteKit_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
-If you're seeing this, you've probably already done this step. Congrats!
+Modern SvelteKit app for designing visual medical reports.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Quick Start
 
-# create a new project in my-app
-npm create svelte@latest my-app
 ```
+npm install    # Install dependencies
+npm run dev    # Start development server
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
