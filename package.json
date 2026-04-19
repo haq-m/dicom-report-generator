@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build:vercel": "vite build",
+		"build:node": "DEPLOY_TARGET=node vite build",
 		"preview": "vite preview",
 		"start": "node build",
 		"test": "npm run test:integration && npm run test:unit",
@@ -21,6 +22,7 @@
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^5.5.4",
+		"@sveltejs/adapter-vercel": "5.8.2",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "^8.56.7",
